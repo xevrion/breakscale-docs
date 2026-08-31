@@ -1,0 +1,51 @@
+---
+title: "Specialised stores"
+description: "The right store for each job, side by side"
+---
+
+Search, vectors, graph, blobs, metrics and an archive tier, each store built for one job. Watch which one saturates first, and which fails without a sound.
+
+## What to watch
+
+One general purpose database would do all of this badly. A text index, a vector index and a graph each answer a question the others are slow at, and the price is four stores to run instead of one.
+
+Take the load to 4x. The vector index saturates and the client sees the errors immediately. The archive path saturates too and says nothing: the batch client is still acked while cold storage sheds behind the queue.
+
+Cold storage is slow on purpose, seconds per restore, because almost nothing is ever read back. Paying for fast storage you never read is the mistake this avoids.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Client | 2 |
+| Cold storage | 1 |
+| Graph database | 1 |
+| Load balancer | 1 |
+| Object storage | 1 |
+| Queue | 1 |
+| Service | 3 |
+| Vector database | 1 |
+| Worker | 1 |
+| searchindex | 1 |
+| timeseriesdb | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 246 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 738 requests a second with 0% errors. At 984 it is losing 8% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 246 | 252 | 170.4ms | 0% |
+| 369 | 383 | 160.6ms | 0% |
+| 492 | 478 | 162.1ms | 0% |
+| 615 | 618 | 151.8ms | 0% |
+| 738 | 746 | 428.1ms | 0% |
+| 984 | 896 | 592.1ms | 8.4% |
+| 1476 | 1208 | 597.9ms | 16.6% |
+| 1968 | 1570 | 595.9ms | 22.8% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Specialised stores** from the Examples menu and drag the traffic slider yourself.
+</Card>

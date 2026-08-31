@@ -1,0 +1,39 @@
+---
+title: "Circuit breaker"
+description: "Giving a failing dependency room to recover"
+---
+
+A breaker watches a failing dependency and stops calling it. Break the payments API and watch the circuit trip, then recover.
+
+## What to watch
+
+Right click the payments API and inject a crash. Once half the calls in a four second window fail, the breaker opens and the rest fail in microseconds instead of waiting out a timeout. After three seconds it closes and probes again.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Circuit breaker | 1 |
+| Client | 1 |
+| Service | 2 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 100 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 150 requests a second with 0% errors. At 200 it is losing 20% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 100 | 117 | 93.3ms | 0% |
+| 150 | 140 | 336.3ms | 0% |
+| 200 | 139 | 355.5ms | 20.4% |
+| 250 | 121 | 344.3ms | 52% |
+| 300 | 46 | 348.6ms | 82.3% |
+| 400 | 11 | 354ms | 97.4% |
+| 600 | 29 | 293.7ms | 95.3% |
+| 800 | 7 | 307.3ms | 99.2% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Circuit breaker** from the Examples menu and drag the traffic slider yourself.
+</Card>

@@ -1,0 +1,40 @@
+---
+title: "Cache aside"
+description: "What happens when the hit rate falls"
+---
+
+The cache absorbs most reads. Lower the hit rate and the database takes the whole load.
+
+## What to watch
+
+The database only ever sees the misses. At an 85 percent hit rate it takes about 30 requests a second out of 200. Drag the hit rate down to 0.3 and it is instantly over its 133 a second ceiling, with no change in load at all.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Cache | 1 |
+| Client | 1 |
+| Database | 1 |
+| Service | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 200 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 800 requests a second with 0% errors. At 1200 it is losing 3% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 200 | 204 | 61.9ms | 0% |
+| 300 | 302 | 73.9ms | 0% |
+| 400 | 417 | 80.3ms | 0% |
+| 500 | 522 | 108.6ms | 0% |
+| 600 | 633 | 95.6ms | 0% |
+| 800 | 820 | 143.6ms | 0% |
+| 1200 | 1066 | 313.8ms | 3.2% |
+| 1600 | 1520 | 320.7ms | 8.1% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Cache aside** from the Examples menu and drag the traffic slider yourself.
+</Card>

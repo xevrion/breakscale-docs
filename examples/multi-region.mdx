@@ -1,0 +1,40 @@
+---
+title: "Multi-region failover"
+description: "What a failover actually costs you"
+---
+
+Two regions, one serving. Crash the active one and every request fails until failover lands.
+
+## What to watch
+
+Crash the US API. For five seconds every request fails while the router notices, then Europe picks it all up. Only one region takes traffic at a time, so this pair buys you survival, not extra capacity: at 4x the active region melts while the standby sits at zero.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Client | 1 |
+| Database | 2 |
+| Region | 1 |
+| Service | 2 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 250 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 375 requests a second with 0% errors. At 500 it is losing 23% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 250 | 232 | 76.9ms | 0% |
+| 375 | 384 | 169.9ms | 0% |
+| 500 | 393 | 246.3ms | 23.2% |
+| 625 | 388 | 260.2ms | 40% |
+| 750 | 392 | 253.4ms | 48.7% |
+| 1000 | 393 | 247ms | 61.8% |
+| 1500 | 392 | 250.5ms | 73.1% |
+| 2000 | 391 | 259.9ms | 80.6% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Multi-region failover** from the Examples menu and drag the traffic slider yourself.
+</Card>

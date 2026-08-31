@@ -1,0 +1,39 @@
+---
+title: "Read replicas"
+description: "Reads that scale, and reads that go stale"
+---
+
+Replicas scale reads but not writes, and a read can arrive before the write it should have seen.
+
+## What to watch
+
+Copies give you read capacity and nothing else: 600 reads a second across three of them, but still only 200 writes against the one primary. Adding copies fixes one of those and does nothing at all for the other.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Client | 1 |
+| Read replicas | 1 |
+| Service | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 300 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 600 requests a second with 0% errors. At 750 it is losing 5% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 300 | 308 | 50.1ms | 0% |
+| 450 | 479 | 55.8ms | 0% |
+| 600 | 608 | 58.6ms | 0% |
+| 750 | 727 | 256.3ms | 4.5% |
+| 900 | 703 | 262.9ms | 23.6% |
+| 1200 | 773 | 271.9ms | 35.4% |
+| 1800 | 796 | 694.9ms | 55.9% |
+| 2400 | 799 | 715.1ms | 67.9% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Read replicas** from the Examples menu and drag the traffic slider yourself.
+</Card>

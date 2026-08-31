@@ -1,0 +1,52 @@
+---
+title: "WhatsApp: store and forward"
+description: "Messages that wait instead of failing"
+---
+
+A simplified reconstruction of WhatsApp from Rick Reed's Erlang scaling talks; numbers are illustrative. The chat core is deliberately tiny and nearly idle: one routing hop, then online recipients get pushed and offline ones park in the Mnesia store until they reconnect, so senders essentially cannot fail. At 4x undelivered messages pile up by the hundreds per second with zero errors, and the gateway runs out of held connections, not requests. Watch the queue depth, not the error rate.
+
+## What to watch
+
+What runs out here is open connections, not requests. 45 phones connect a second and each holds on for 30 seconds, filling 1350 of the 1800 slots. This box is run deliberately hot, because connections were the entire cost of the system.
+
+The router does almost nothing per message: it cannot even read them. At 400 a second it is about one percent busy. Simple and small beat big here, and that was the point.
+
+Turn the load up to 4x and watch the offline store, not the error rate. A message to a phone that is not online parks here until it reconnects, so senders keep succeeding while undelivered messages pile up by the hundreds a second.
+
+Photos and video ride a separate path and never touch the chat core, so a media outage leaves messaging alone.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| CDN | 1 |
+| Client | 4 |
+| Database | 1 |
+| Load balancer | 1 |
+| Object storage | 1 |
+| Queue | 1 |
+| Scheduled job | 1 |
+| Service | 3 |
+| WebSocket gateway | 1 |
+| Worker | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 550 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 825 requests a second with 0% errors. At 1100 it is losing 5% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 550 | 579 | 145.5ms | 0% |
+| 825 | 843 | 156.7ms | 0% |
+| 1100 | 1057 | 164.9ms | 4.6% |
+| 1375 | 1326 | 165.6ms | 7.1% |
+| 1650 | 1544 | 131.9ms | 8.1% |
+| 2200 | 2002 | 161.9ms | 8.3% |
+| 3300 | 2974 | 153.8ms | 8.2% |
+| 4400 | 4031 | 158.7ms | 8.2% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **WhatsApp: store and forward** from the Examples menu and drag the traffic slider yourself.
+</Card>

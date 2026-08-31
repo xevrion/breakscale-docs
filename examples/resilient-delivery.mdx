@@ -1,0 +1,51 @@
+---
+title: "Resilient delivery"
+description: "Choosing what fails, and where failures go"
+---
+
+Failing on purpose: a shedder drops the traffic that matters least, a bulkhead contains a slow dependency, retried deliveries land on a dead letter shelf, and a write-behind buffer trades durability for speed.
+
+## What to watch
+
+At 4x the shedder drops the traffic marked best effort and keeps serving the rest. Choosing what to drop beats letting a queue choose for you.
+
+Right click recommendations and inject slow. The bulkhead in front fills within one round trip, and after that the extra calls fail in microseconds instead of queueing. One slow feature stops being everyone else's problem.
+
+The write cache acks in about a millisecond and flushes 200ms later, so roughly 50 rows are always acknowledged but not yet stored. Crash it and exactly that many writes are gone.
+
+The transcoders drain about 3.3 jobs a second against 3 arriving, so they are already 90 percent busy at rest. Turn the load up and the backlog grows about 9 jobs every second and never drains on its own. Raise the number of instances to fix it.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Bulkhead | 1 |
+| Client | 2 |
+| Database | 1 |
+| Queue | 1 |
+| Retry queue | 1 |
+| Service | 3 |
+| Transcoder | 1 |
+| Write-behind cache | 1 |
+| loadshedder | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 243 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 243 requests a second with 0.4% errors. At 365 it is losing 4% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 243 | 251 | 52ms | 0.4% |
+| 365 | 366 | 50.9ms | 4.4% |
+| 486 | 421 | 57.7ms | 20% |
+| 608 | 408 | 61ms | 31.9% |
+| 729 | 398 | 55.8ms | 46.6% |
+| 972 | 410 | 61.9ms | 58.2% |
+| 1458 | 420 | 59.8ms | 72.4% |
+| 1944 | 429 | 61.6ms | 77.8% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Resilient delivery** from the Examples menu and drag the traffic slider yourself.
+</Card>

@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "Breakscale",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#325cbd",
+    "light": "#6f9bf0",
+    "dark": "#23438c"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -13,41 +13,69 @@
       {
         "group": "Getting Started",
         "pages": [
-          "index",
-          "quickstart"
+          "index"
+        ]
+      },
+      {
+        "group": "Examples",
+        "pages": [
+          "examples/single-server",
+          "examples/load-balanced",
+          "examples/cache-aside",
+          "examples/async-workers",
+          "examples/retry-storm",
+          "examples/cdn-origin",
+          "examples/rate-limited-api",
+          "examples/circuit-breaker",
+          "examples/read-replicas",
+          "examples/sharded-database",
+          "examples/autoscaling-service",
+          "examples/multi-region",
+          "examples/full-stack",
+          "examples/specialised-stores",
+          "examples/event-driven",
+          "examples/resilient-delivery",
+          "examples/discord",
+          "examples/uber",
+          "examples/netflix",
+          "examples/spotify",
+          "examples/twitter",
+          "examples/stripe",
+          "examples/whatsapp"
         ]
       }
     ],
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Simulator",
+          "href": "https://breakscale.tech",
+          "icon": "play"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "GitHub",
+          "href": "https://github.com/xevrion/breakscale",
+          "icon": "github"
+        },
+        {
+          "anchor": "Glossary",
+          "href": "https://breakscale.tech/glossary",
+          "icon": "book-open-cover"
         }
       ]
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "GitHub",
+        "href": "https://github.com/xevrion/breakscale"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "Open the simulator",
+      "href": "https://breakscale.tech"
     }
   },
   "contextual": {
@@ -64,9 +92,8 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/xevrion/breakscale",
+      "x": "https://x.com/xevrion_the1"
     }
   }
 }

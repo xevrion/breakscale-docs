@@ -1,0 +1,41 @@
+---
+title: "Async workers"
+description: "A backlog that grows faster than it drains"
+---
+
+Requests are acknowledged instantly and buffered. Watch the backlog grow when workers fall behind.
+
+## What to watch
+
+The workers drain 200 a second. Push the load past that and the client still gets an instant yes, because the queue is absorbing the difference. Nothing looks wrong until the queue fills, so the graph to watch is the queue depth, not the error rate.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Client | 1 |
+| Database | 1 |
+| Queue | 1 |
+| Service | 1 |
+| Worker | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 120 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 360 requests a second with 0% errors. At 480 it is losing 60% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 120 | 117 | 21.7ms | 0% |
+| 180 | 194 | 19ms | 0% |
+| 240 | 232 | 21.3ms | 0% |
+| 300 | 281 | 21ms | 0% |
+| 360 | 374 | 19.3ms | 0% |
+| 480 | 197 | 18.4ms | 60.4% |
+| 720 | 206 | 20.1ms | 72.2% |
+| 960 | 204 | 18.8ms | 79% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Async workers** from the Examples menu and drag the traffic slider yourself.
+</Card>

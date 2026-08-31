@@ -1,0 +1,39 @@
+---
+title: "Retry storm"
+description: "Retries making an overload worse"
+---
+
+A short timeout with retries in front of a small database. Retries multiply the load that caused them.
+
+## What to watch
+
+The database handles 100 a second. Once waiting passes the 250ms timeout on the API, every request starts retrying three times, so the load triples onto a database that was already full. It is steady at 80 a second. Push to 85 and it starts losing most of its traffic; by 90 almost none gets through.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Client | 1 |
+| Database | 1 |
+| Service | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 45 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 90 requests a second with 0% errors. At 113 it is losing 100% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 45 | 40 | 109.6ms | 0% |
+| 68 | 77 | 140.9ms | 0% |
+| 90 | 91 | 149.3ms | 0% |
+| 113 | 0 | nothing served | 100% |
+| 135 | 0 | nothing served | 100% |
+| 180 | 0 | nothing served | 100% |
+| 270 | 0 | nothing served | 100% |
+| 360 | 0 | nothing served | 100% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Retry storm** from the Examples menu and drag the traffic slider yourself.
+</Card>

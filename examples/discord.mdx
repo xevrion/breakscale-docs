@@ -1,0 +1,54 @@
+---
+title: "Discord: real-time chat"
+description: "Millions of sockets, and fan-out per message"
+---
+
+A simplified reconstruction of Discord from their engineering blog; numbers are illustrative. The gateway runs out of connections, not requests; one message fans out to every gateway pod, and at 2x the push tier sheds deliveries the senders never see; make one channel hot and its store shard melts alone. Voice rides its own servers.
+
+## What to watch
+
+The gateway counts open connections, not requests. 30 new a second, each held for 40 seconds, is 1200 sockets against a ceiling of 1600. Double the load and it starts refusing connections outright.
+
+Drag the message rate up and watch the push servers. One message becomes one delivery per pod, and each pod can only do about 130 a second. Past that, members stop seeing messages while the senders see no errors at all. That silence is what makes fan-out hard.
+
+Messages are split across six channel shards. Give the message store a hot key and one busy channel takes far more than its share, so that shard melts while the average still looks healthy.
+
+Voice runs on its own servers and never touches the text path, so chat can be on fire while calls stay up.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| CDN | 1 |
+| Client | 4 |
+| Load balancer | 1 |
+| Object storage | 1 |
+| Pub/sub topic | 1 |
+| Queue | 1 |
+| Rate limiter | 1 |
+| Service | 7 |
+| Sharded store | 1 |
+| WebSocket gateway | 1 |
+| Worker | 1 |
+| searchindex | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 250 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 625 requests a second with 0% errors. At 750 it is losing 16% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 250 | 229 | 133.4ms | 0% |
+| 375 | 393 | 112ms | 0% |
+| 500 | 496 | 158.9ms | 0% |
+| 625 | 656 | 150.3ms | 0% |
+| 750 | 627 | 150.2ms | 16.4% |
+| 1000 | 754 | 155.8ms | 22.2% |
+| 1500 | 1013 | 131.6ms | 32.5% |
+| 2000 | 1346 | 177.9ms | 32.9% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Discord: real-time chat** from the Examples menu and drag the traffic slider yourself.
+</Card>

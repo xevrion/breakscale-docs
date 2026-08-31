@@ -1,0 +1,39 @@
+---
+title: "Sharded database"
+description: "One hot key undoing all the partitions"
+---
+
+Four partitions share the load evenly until one key gets hot, and then a single shard melts while the average still looks healthy.
+
+## What to watch
+
+Four shards carry 160 a second each. Push the hot key share to 0.8 and one shard alone is offered 320 against its own 160, so it pins and sheds while the utilisation meter, an average across all four, still looks comfortable.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Client | 1 |
+| Service | 1 |
+| Sharded store | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 400 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 600 requests a second with 0% errors. At 800 it is losing 14% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 400 | 373 | 94.4ms | 0% |
+| 600 | 602 | 234.9ms | 0% |
+| 800 | 636 | 285.2ms | 14.4% |
+| 1000 | 627 | 290.6ms | 40.1% |
+| 1200 | 651 | 294.7ms | 44.6% |
+| 1600 | 637 | 292.7ms | 58.7% |
+| 2400 | 654 | 289.5ms | 73.6% |
+| 3200 | 632 | 298.9ms | 79.9% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Sharded database** from the Examples menu and drag the traffic slider yourself.
+</Card>

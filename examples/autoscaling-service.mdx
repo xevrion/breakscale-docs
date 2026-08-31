@@ -1,0 +1,40 @@
+---
+title: "Autoscaling service"
+description: "Capacity arriving after it was needed"
+---
+
+Capacity chases the load, but new servers take time to boot, so requests fail in the gap between the two.
+
+## What to watch
+
+Raise the load and capacity does not follow. The controller waits out three seconds of cooldown, decides, and the new machines take four more to boot. Requests fail in that gap, and the gap is the point: an autoscaler lags, it does not shield.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Autoscaler | 1 |
+| Client | 1 |
+| Database | 1 |
+| Service | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 250 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 625 requests a second with 0% errors. At 750 it is losing 18% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 250 | 242 | 77.7ms | 0% |
+| 375 | 389 | 85.1ms | 0% |
+| 500 | 509 | 103.4ms | 0% |
+| 625 | 612 | 506.6ms | 0% |
+| 750 | 618 | 591.3ms | 18.4% |
+| 1000 | 588 | 713.4ms | 45.7% |
+| 1500 | 591 | 561.9ms | 60.4% |
+| 2000 | 614 | 673.9ms | 70% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Autoscaling service** from the Examples menu and drag the traffic slider yourself.
+</Card>

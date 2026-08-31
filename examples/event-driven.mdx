@@ -1,0 +1,48 @@
+---
+title: "Event-driven backend"
+description: "Lag, fan-out, cold starts and a cron burst"
+---
+
+A stream with two consumer groups, a fan-out topic, a websocket tier, a sidecar, a lambda and a cron burst. Watch consumer lag grow, cold starts spike on the quarter-minute, and connections, not requests, run out.
+
+## What to watch
+
+Everything on the left is a caller waiting for an answer. Everything on the right runs after that answer was already sent.
+
+One event becomes five pieces of work here, each read by its own consumer. Turn the load up and watch the audit log: it takes 40ms a message and falls behind while the four beside it keep up, and nobody calling the API sees a thing.
+
+The report function starts cold. The first call after a quiet spell pays 350ms of startup, then stays warm for ten seconds. Watch the first burst after the timer fires.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Client | 2 |
+| Database | 1 |
+| Pub/sub topic | 1 |
+| Scheduled job | 1 |
+| Serverless function | 1 |
+| Service | 7 |
+| WebSocket gateway | 1 |
+| apigateway | 1 |
+| sidecar | 1 |
+| streambroker | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 90 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 90 | 84 | 76.4ms | 0% |
+| 135 | 120 | 76.5ms | 2.7% |
+| 180 | 206 | 86.5ms | 0.5% |
+| 225 | 202 | 72.2ms | 5.2% |
+| 270 | 227 | 61.9ms | 9.3% |
+| 360 | 222 | 67.3ms | 37.3% |
+| 540 | 147 | 73.6ms | 74% |
+| 720 | 149 | 74.8ms | 78.6% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Event-driven backend** from the Examples menu and drag the traffic slider yourself.
+</Card>

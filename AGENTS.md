@@ -1,33 +1,53 @@
-> **First-time setup**: Customize this file for your project. Prompt the user to customize this file for their project.
-> For Mintlify product knowledge (components, configuration, writing standards),
-> install the Mintlify skill: `npx skills add https://mintlify.com/docs`
-
 # Documentation project instructions
 
-## About this project
+Docs for [Breakscale](https://github.com/xevrion/breakscale), a system design
+simulator. Built on Mintlify: MDX pages with YAML frontmatter, configuration in
+`docs.json`.
 
-- This is a documentation site built on [Mintlify](https://mintlify.com)
-- Pages are MDX files with YAML frontmatter
-- Configuration lives in `docs.json`
-- Use the Mintlify MCP server, `https://mcp.mintlify.com`, to edit content and settings via MCP
-- Use the Mintlify docs MCP server, `https://www.mintlify.com/docs/mcp`, to query information about using Mintlify via MCP
+## Everything under examples/ is generated. Do not edit it.
 
-## Terminology
+The 23 example pages are written by `tools/example-pages.ts` in the simulator's
+repository, from the presets themselves, and the numbers in them are measured by
+running each design through the real engine at build time.
 
-{/* Add product-specific terms and preferred usage */}
-{/* Example: Use "workspace" not "project", "member" not "user" */}
+Editing a page here is worse than useless: the change is lost on the next
+generate, and until then the docs disagree with the tool. Fix the preset or the
+generator instead, then run:
 
-## Style preferences
+```bash
+cd ../breakscale   # wherever the simulator repo lives
+bun run tools/build-docs.ts ../breakscale-docs
+```
 
-{/* Add any project-specific style rules below */}
+That also rewrites the Examples group in `docs.json`, so a new preset appears in
+the navigation without anybody remembering to add it.
 
-- Use active voice and second person ("you")
-- Keep sentences concise — one idea per sentence
-- Use sentence case for headings
-- Bold for UI elements: Click **Settings**
-- Code formatting for file names, commands, paths, and code references
+## The rule the whole project runs on
 
-## Content boundaries
+The numbers have to be true. This is a tool people learn from, so a plausible
+looking number is worse than no number at all. That applies to prose here as
+much as to the simulator: do not write "roughly 100 requests a second" beside a
+table that measured 91.
 
-{/* Define what should and shouldn't be documented */}
-{/* Example: Don't document internal admin features */}
+If a claim cannot be measured or cited, either measure it or cut it.
+
+## Style
+
+- Second person, active voice
+- One idea per sentence, and vary the length so it reads like a person wrote it
+- Sentence case for headings
+- No em dashes, no arrow chains
+- Code formatting for file names, commands and paths
+- Spell out what a number means on first mention: "91 requests a second" rather
+  than "91 rps"
+
+## What belongs here
+
+Teaching material: what a design does, why it breaks, what to change. The
+simulator's own README covers building and contributing to the codebase, and
+duplicating it here only creates a second copy to drift.
+
+## Mintlify tooling
+
+- MCP server for editing content and settings: `https://mcp.mintlify.com`
+- MCP server for Mintlify's own docs: `https://www.mintlify.com/docs/mcp`

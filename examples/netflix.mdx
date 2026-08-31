@@ -1,0 +1,57 @@
+---
+title: "Netflix: streaming at scale"
+description: "Almost everything served from the edge"
+---
+
+A simplified reconstruction of Netflix from their tech blog; numbers are illustrative. Open Connect appliances inside ISPs serve ~96% of the bytes, so streaming barely touches the cloud; the control plane behind Zuul is where 4x hurts: licensing trips its Hystrix breaker, the recs bulkhead fills, Keystone quietly falls behind, and the encode farm backlog grows while viewers stream on.
+
+## What to watch
+
+1500 requests a second of video, and 240 of everything else. The video almost never reaches Netflix: the edge cache answers 96 percent of it from inside your ISP.
+
+Encoding is slow and that is fine. Jobs wait in a queue and nobody is watching a spinner, so seconds here cost nothing.
+
+The bottleneck is the licence service, not the video. It has 5 slots at 18ms, so it runs out at about 280 requests a second. Raise the load and watch it fill before anything else does.
+
+The breaker in front of it is what stops one slow service from holding every request open. Trip it and playback fails fast instead of hanging.
+
+Recommendations sit behind a bulkhead, so if they get slow the play path is untouched. Browsing breaking is survivable; playback breaking is not.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Bulkhead | 1 |
+| CDN | 1 |
+| Cache | 2 |
+| Circuit breaker | 1 |
+| Client | 3 |
+| Object storage | 1 |
+| Queue | 1 |
+| Service | 5 |
+| Sharded store | 1 |
+| Transcoder | 1 |
+| apigateway | 1 |
+| streambroker | 1 |
+| timeseriesdb | 1 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 1742 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 3484 requests a second with 0.3% errors. At 4355 it is losing 2% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 1742 | 1726 | 112.8ms | 0.1% |
+| 2613 | 2630 | 134.1ms | 0.1% |
+| 3484 | 3522 | 125.7ms | 0.3% |
+| 4355 | 4367 | 131.8ms | 2.1% |
+| 5226 | 5013 | 129.7ms | 3.7% |
+| 6968 | 6340 | 78.9ms | 9.1% |
+| 10452 | 9334 | 108.5ms | 10.5% |
+| 13936 | 12138 | 103.7ms | 11.9% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Netflix: streaming at scale** from the Examples menu and drag the traffic slider yourself.
+</Card>
