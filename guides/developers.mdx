@@ -1,0 +1,71 @@
+---
+title: "For developers"
+description: "Run the break search from a script with verify(), or from your AI assistant with break_it"
+---
+
+The search behind [Can you break it?](/guides/break-it) also runs without the app: as a function you can call from a script in the simulator's repository, and as the `break_it` tool on the Breakscale MCP server. All three run the same search, so the same design, goal and options give the same answer everywhere.
+
+## verify()
+
+`verify` lives in `src/sim/verify.ts`. It takes a design, a goal and options, and returns a verdict. There is no wall clock in it: budgets count fault schedules and simulated seconds, so the answer does not depend on how fast the machine is.
+
+1. Clone the repository and run `bun install`. You need [Bun](https://bun.sh).
+2. Save a script like this in the repository root as `check.ts`:
+
+```ts
+import { followRequest, verify } from './src/sim/verify';
+import { PRESETS } from './src/sim/presets';
+
+const design = PRESETS.find((p) => p.id === 'checkout')!.topology;
+const v = verify(design, { metric: 'doubleCharges', max: 0 }, { chargeable: ['pay'] });
+
+if (v.status === 'broken') {
+  console.log(v.schedule);                // the smallest set of faults found
+  console.log(v.measured.actual);         // what they caused
+  if (v.first) console.log(followRequest(v.replay, v.first.rid));
+} else {
+  console.log(v.status);
+}
+```
+
+3. Run `bun check.ts`.
+
+On the Checkout and payments example this finds one fault: the connection from the Checkout API to Payments delivering 1% of its requests twice, at 10s for 2s, which charges one payment twice.
+
+### Goals
+
+| Metric | `max` is | Notes |
+| --- | --- | --- |
+| `errorRate` | percent, so `1` means 1% | Add `route` with a client's id to hold it for that client only. |
+| `p99`, `p95` | milliseconds | Also takes `route`. |
+| `lostWrites`, `lostJobs` | a count | Whole system only. |
+| `doubleCharges` | a count | Mark the paying parts with `chargeable: 1` in the design, or pass their ids as `chargeable`. |
+| `lostAckedWrites` | a count | Needs a write-behind cache, or a database or read replicas with `flushEveryMs` above 0. |
+| `staleReads` | a count | Needs read replicas or a search index. |
+
+### The verdict
+
+| `status` | Meaning |
+| --- | --- |
+| `broken` | `schedule` is the smallest set of faults found and `measured` what they caused, against `withoutFaults`. `replay` is the design with those faults and the seed, ready to play or share. Correctness goals add `first`, the earliest violation. |
+| `held` | Nothing broke it. `tried`, `stoppedBy` and `closest` say how hard it looked. |
+| `alreadyBroken` | It misses the goal with no faults at all. |
+| `invalid` | The input was wrong. `errors` says why in plain words. |
+
+Useful options are `budget` (schedules to try), `maxFaults` (1 to 3), `kinds` (which faults to use), `protect` (parts to leave alone), `includeSinglePoints` and `seed`. `verifySteps` is the same search as a generator, one simulated second per step, if you want progress.
+
+## The break_it MCP tool
+
+If your assistant is connected to the Breakscale MCP server, ask it to try to break a design. The `break_it` tool takes the same design as `create_view` plus a goal, and answers in words, with a breakscale.tech link that replays the break.
+
+Things to ask:
+
+- "Try to break this design. The goal is fewer than 1% of requests failing."
+- "Mark Payments as chargeable and check that no payment is charged twice."
+- "Can a crash lose an order this database said it saved?"
+
+For the correctness goals, `doubleCharges`, `lostAckedWrites` and `staleReads`, it also names the first request that broke the rule and tells its story step by step.
+
+A call tries at most 200 schedules when the server runs on your own machine, and 40 on the hosted server at `https://mcp.breakscale.tech/mcp`. By default it does not crash, fail or cut a part that every request passes through, except for the correctness goals; set `includeSinglePoints` to include them.
+
+Designs sent over MCP can also carry `faults`, `seed` and a `lossRate` on each connection, so an assistant can build a run that replays exactly. Setup for each assistant is in the [MCP guide](https://github.com/xevrion/breakscale/blob/main/mcp/README.md).

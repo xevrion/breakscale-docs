@@ -17,6 +17,25 @@
         ]
       },
       {
+        "group": "Guides",
+        "pages": [
+          "guides/faults-and-replay",
+          "guides/break-it",
+          "guides/verification",
+          "guides/challenges",
+          "guides/learning",
+          "guides/incidents",
+          "guides/traffic",
+          "guides/shortcuts"
+        ]
+      },
+      {
+        "group": "For Developers",
+        "pages": [
+          "guides/developers"
+        ]
+      },
+      {
         "group": "Examples",
         "pages": [
           "examples/single-server",
