@@ -7,7 +7,7 @@ One service in front of one database. Latency climbs sharply as the database fil
 
 ## What to watch
 
-One server, one database. The database is the smaller of the two: 6 requests at a time at 30ms each, so it runs out near 200 a second. Drag the load past 4x and the wait builds there first, not at the API.
+One server, one database. The database is the smaller of the two: 6 requests at a time at 30ms each, so it runs out near 200 a second. Drag the load past 200 a second and the wait builds there first, not at the API.
 
 ## What it is made of
 
@@ -21,18 +21,18 @@ One server, one database. The database is the smaller of the two: 6 requests at 
 
 Measured by running this design through the simulator at multiples of its own offered rate of 50 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
 
-<Note>This design holds 150 requests a second with 0% errors. At 200 it is losing 6% of them.</Note>
+<Note>This design holds 150 requests a second with 0% errors. At 200 it is losing 10% of them.</Note>
 
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
 | 50 | 38 | 116ms | 0% |
-| 75 | 71 | 120.9ms | 0% |
-| 100 | 104 | 123.5ms | 0% |
-| 125 | 122 | 134.3ms | 0% |
-| 150 | 139 | 148.3ms | 0% |
-| 200 | 189 | 388.5ms | 6.1% |
-| 300 | 177 | 454.3ms | 44% |
-| 400 | 200 | 597.1ms | 50.1% |
+| 75 | 72 | 121.7ms | 0% |
+| 100 | 111 | 129.1ms | 0% |
+| 125 | 141 | 150.9ms | 0% |
+| 150 | 151 | 142.2ms | 0% |
+| 200 | 193 | 358.9ms | 9.8% |
+| 300 | 193 | 366.2ms | 37.6% |
+| 400 | 197 | 425.9ms | 52.3% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Single server** from the Examples menu and drag the traffic slider yourself.

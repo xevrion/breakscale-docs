@@ -22,18 +22,18 @@ The origin only ever sees what the cache misses. It handles 120 a second, and th
 
 Measured by running this design through the simulator at multiples of its own offered rate of 400 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
 
-<Note>This design holds 1200 requests a second with 0% errors. At 1600 it is losing 2% of them.</Note>
+<Note>This design holds 1200 requests a second with 0% errors. At 1600 it is losing 1% of them.</Note>
 
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
-| 400 | 392 | 58.2ms | 0% |
-| 600 | 606 | 68.1ms | 0% |
-| 800 | 833 | 78.5ms | 0% |
-| 1000 | 959 | 87.6ms | 0% |
-| 1200 | 1232 | 415.6ms | 0% |
-| 1600 | 1610 | 609.6ms | 2% |
-| 2400 | 2231 | 606ms | 4.3% |
-| 3200 | 3039 | 527ms | 5.3% |
+| 400 | 414 | 44.2ms | 0% |
+| 600 | 618 | 55.7ms | 0% |
+| 800 | 714 | 68.9ms | 0% |
+| 1000 | 993 | 113.3ms | 0% |
+| 1200 | 1237 | 554.9ms | 0% |
+| 1600 | 1542 | 566.7ms | 1.2% |
+| 2400 | 2227 | 586ms | 5% |
+| 3200 | 3064 | 603.9ms | 6.2% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **CDN and origin** from the Examples menu and drag the traffic slider yourself.

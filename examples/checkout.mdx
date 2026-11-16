@@ -1,0 +1,39 @@
+---
+title: "Checkout and payments"
+description: "Fast, up, and charging some people twice"
+---
+
+A checkout API calls Payments and an orders database. A slow answer makes the API try again while the first try is still charging, so the dashboards stay green while some customers pay twice.
+
+## What to watch
+
+Every call that finishes at Payments charges a card. The API gives Payments 300ms, then tries again while the first try is still running, and that one charges too. Open Can you break it? and ask that nobody pays twice. Push the load to 3x and it is broken with no faults at all, while the error chart barely moves.
+
+## What it is made of
+
+| Component | Count |
+| --- | ---: |
+| Client | 1 |
+| Database | 1 |
+| Service | 2 |
+
+## Under load
+
+Measured by running this design through the simulator at multiples of its own offered rate of 100 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
+
+<Note>This design holds 300 requests a second with 0% errors. At 400 it is losing 19% of them.</Note>
+
+| Offered | Goodput | p99 | Errors |
+| ---: | ---: | ---: | ---: |
+| 100 | 90 | 109.8ms | 0% |
+| 150 | 132 | 103ms | 0% |
+| 200 | 191 | 97.8ms | 0% |
+| 250 | 242 | 106.6ms | 0% |
+| 300 | 300 | 550.8ms | 0% |
+| 400 | 300 | 711.6ms | 19.2% |
+| 600 | 301 | 708.6ms | 48.2% |
+| 800 | 297 | 692.4ms | 61.9% |
+
+<Card title="Open this example" icon="play" href="https://breakscale.tech">
+  Load **Checkout and payments** from the Examples menu and drag the traffic slider yourself.
+</Card>

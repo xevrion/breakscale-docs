@@ -7,9 +7,9 @@ Failing on purpose: a shedder drops the traffic that matters least, a bulkhead c
 
 ## What to watch
 
-At 4x the shedder drops the traffic marked best effort and keeps serving the rest. Choosing what to drop beats letting a queue choose for you.
+At 4x the shedder drops the traffic marked best effort first, to protect the rest. Choosing what to drop beats letting a queue choose for you.
 
-Right click recommendations and inject slow. The bulkhead in front fills within one round trip, and after that the extra calls fail in microseconds instead of queueing. One slow feature stops being everyone else's problem.
+Select recommendations and press Slow in the inspector. The bulkhead in front fills within one round trip, and after that the extra calls fail in microseconds instead of queueing. One slow feature stops being everyone else's problem.
 
 The write cache acks in about a millisecond and flushes 200ms later, so roughly 50 rows are always acknowledged but not yet stored. Crash it and exactly that many writes are gone.
 
@@ -33,18 +33,18 @@ The transcoders drain about 3.3 jobs a second against 3 arriving, so they are al
 
 Measured by running this design through the simulator at multiples of its own offered rate of 243 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
 
-<Note>This design holds 243 requests a second with 0.4% errors. At 365 it is losing 4% of them.</Note>
+<Note>This design holds 243 requests a second with 0.4% errors. At 365 it is losing 1% of them.</Note>
 
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
 | 243 | 251 | 52ms | 0.4% |
-| 365 | 366 | 50.9ms | 4.4% |
-| 486 | 421 | 57.7ms | 20% |
-| 608 | 408 | 61ms | 31.9% |
-| 729 | 398 | 55.8ms | 46.6% |
-| 972 | 410 | 61.9ms | 58.2% |
-| 1458 | 420 | 59.8ms | 72.4% |
-| 1944 | 429 | 61.6ms | 77.8% |
+| 365 | 366 | 51.6ms | 1.2% |
+| 486 | 374 | 55.5ms | 15.8% |
+| 608 | 422 | 61.2ms | 31.2% |
+| 729 | 406 | 79.7ms | 47.3% |
+| 972 | 413 | 61.1ms | 56.8% |
+| 1458 | 430 | 53.1ms | 70.7% |
+| 1944 | 427 | 63.2ms | 78% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Resilient delivery** from the Examples menu and drag the traffic slider yourself.

@@ -36,18 +36,18 @@ Voice runs on its own servers and never touches the text path, so chat can be on
 
 Measured by running this design through the simulator at multiples of its own offered rate of 250 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
 
-<Note>This design holds 625 requests a second with 0% errors. At 750 it is losing 16% of them.</Note>
+<Note>This design holds 625 requests a second with 0% errors. At 750 it is losing 14% of them.</Note>
 
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
-| 250 | 229 | 133.4ms | 0% |
-| 375 | 393 | 112ms | 0% |
-| 500 | 496 | 158.9ms | 0% |
-| 625 | 656 | 150.3ms | 0% |
-| 750 | 627 | 150.2ms | 16.4% |
-| 1000 | 754 | 155.8ms | 22.2% |
-| 1500 | 1013 | 131.6ms | 32.5% |
-| 2000 | 1346 | 177.9ms | 32.9% |
+| 250 | 244 | 109.5ms | 0% |
+| 375 | 353 | 110ms | 0% |
+| 500 | 518 | 156.4ms | 0% |
+| 625 | 633 | 176.3ms | 0% |
+| 750 | 594 | 180.8ms | 13.6% |
+| 1000 | 757 | 142ms | 23.8% |
+| 1500 | 974 | 141.8ms | 34.1% |
+| 2000 | 1268 | 162.2ms | 35.4% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Discord: real-time chat** from the Examples menu and drag the traffic slider yourself.

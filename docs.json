@@ -35,6 +35,7 @@
           "examples/specialised-stores",
           "examples/event-driven",
           "examples/resilient-delivery",
+          "examples/checkout",
           "examples/discord",
           "examples/uber",
           "examples/netflix",

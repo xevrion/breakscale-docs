@@ -39,18 +39,18 @@ Recommendations sit behind a bulkhead, so if they get slow the play path is unto
 
 Measured by running this design through the simulator at multiples of its own offered rate of 1742 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
 
-<Note>This design holds 3484 requests a second with 0.3% errors. At 4355 it is losing 2% of them.</Note>
+<Note>This design holds 3484 requests a second with 1% errors. At 4355 it is losing 2% of them.</Note>
 
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
-| 1742 | 1726 | 112.8ms | 0.1% |
-| 2613 | 2630 | 134.1ms | 0.1% |
-| 3484 | 3522 | 125.7ms | 0.3% |
-| 4355 | 4367 | 131.8ms | 2.1% |
-| 5226 | 5013 | 129.7ms | 3.7% |
-| 6968 | 6340 | 78.9ms | 9.1% |
-| 10452 | 9334 | 108.5ms | 10.5% |
-| 13936 | 12138 | 103.7ms | 11.9% |
+| 1742 | 1748 | 119.1ms | 0% |
+| 2613 | 2586 | 116.2ms | 0.1% |
+| 3484 | 3501 | 129.4ms | 1% |
+| 4355 | 4167 | 128.6ms | 2.1% |
+| 5226 | 4879 | 127.7ms | 3.8% |
+| 6968 | 6462 | 110.4ms | 9% |
+| 10452 | 9362 | 103.8ms | 10.8% |
+| 13936 | 12451 | 94.8ms | 11.1% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Netflix: streaming at scale** from the Examples menu and drag the traffic slider yourself.

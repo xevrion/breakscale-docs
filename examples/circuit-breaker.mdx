@@ -7,7 +7,7 @@ A breaker watches a failing dependency and stops calling it. Break the payments 
 
 ## What to watch
 
-Right click the payments API and inject a crash. Once half the calls in a four second window fail, the breaker opens and the rest fail in microseconds instead of waiting out a timeout. After three seconds it closes and probes again.
+Select the payments API and press Crash in the inspector. Once half the calls in a four second window fail, the breaker opens and the rest fail in microseconds instead of waiting out a timeout. After three seconds it lets a few test calls through, and closes again only if they succeed.
 
 ## What it is made of
 
@@ -32,7 +32,7 @@ Measured by running this design through the simulator at multiples of its own of
 | 300 | 46 | 348.6ms | 82.3% |
 | 400 | 11 | 354ms | 97.4% |
 | 600 | 29 | 293.7ms | 95.3% |
-| 800 | 7 | 307.3ms | 99.2% |
+| 800 | 0 | nothing served | 100% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Circuit breaker** from the Examples menu and drag the traffic slider yourself.

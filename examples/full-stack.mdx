@@ -9,7 +9,7 @@ Every tier at once: edge cache, load balancer, services, cache, shards, and a qu
 
 Two thirds of the traffic never gets past the edge cache. Only the misses reach anything below, which is why everything behind it looks so lightly loaded at rest.
 
-Take the load to 4x and watch both halves. The sharded store saturates and the client sees errors straight away. The workers saturate too, but the queue swallows the excess, so the client is still told everything is fine while a backlog builds that takes hours to drain.
+Take the load to 4x and watch the job queue. The workers fall behind and for a few seconds the queue swallows the excess, so the client is still told everything is fine. Then its 5000 places fill, and the errors the client sees come from there, while the sharded store's busiest partition is maxed out but turns almost nothing away.
 
 ## What it is made of
 
@@ -37,9 +37,9 @@ Measured by running this design through the simulator at multiples of its own of
 | 1200 | 1241 | 80.9ms | 0% |
 | 1500 | 1536 | 79.1ms | 0% |
 | 1800 | 1507 | 91ms | 18.9% |
-| 2400 | 1893 | 265.7ms | 19.8% |
-| 3600 | 2748 | 403.4ms | 22.9% |
-| 4800 | 3536 | 18ms | 26.2% |
+| 2400 | 1969 | 217.1ms | 19.9% |
+| 3600 | 2700 | 524.3ms | 23.9% |
+| 4800 | 3608 | 418.8ms | 25.9% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Full stack** from the Examples menu and drag the traffic slider yourself.
