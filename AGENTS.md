@@ -1,6 +1,6 @@
 # Documentation project instructions
 
-Docs for [Breakscale](https://github.com/xevrion/breakscale), a system design
+Docs for [Breakscale](https://github.com/workersio/breakscale), a system design
 simulator. Built on Mintlify: MDX pages with YAML frontmatter, configuration in
 `docs.json`.
 

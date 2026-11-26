@@ -68,4 +68,4 @@ For the correctness goals, `doubleCharges`, `lostAckedWrites` and `staleReads`, 
 
 A call tries at most 200 schedules when the server runs on your own machine, and 40 on the hosted server at `https://mcp.breakscale.tech/mcp`. By default it does not crash, fail or cut a part that every request passes through, except for the correctness goals; set `includeSinglePoints` to include them.
 
-Designs sent over MCP can also carry `faults`, `seed` and a `lossRate` on each connection, so an assistant can build a run that replays exactly. Setup for each assistant is in the [MCP guide](https://github.com/xevrion/breakscale/blob/main/mcp/README.md).
+Designs sent over MCP can also carry `faults`, `seed` and a `lossRate` on each connection, so an assistant can build a run that replays exactly. Setup for each assistant is in the [MCP guide](https://github.com/workersio/breakscale/blob/main/mcp/README.md).

@@ -74,7 +74,7 @@
         },
         {
           "anchor": "GitHub",
-          "href": "https://github.com/xevrion/breakscale",
+          "href": "https://github.com/workersio/breakscale",
           "icon": "github"
         },
         {
@@ -89,7 +89,7 @@
     "links": [
       {
         "label": "GitHub",
-        "href": "https://github.com/xevrion/breakscale"
+        "href": "https://github.com/workersio/breakscale"
       }
     ],
     "primary": {
@@ -112,7 +112,7 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/xevrion/breakscale",
+      "github": "https://github.com/workersio/breakscale",
       "x": "https://x.com/xevrion_the1"
     }
   }
