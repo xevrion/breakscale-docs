@@ -1,0 +1,60 @@
+---
+title: "Can you break it?"
+description: "Pick what has to hold, and let Breakscale search for the faults that break it"
+---
+
+Breaking a design by hand finds the failures you already thought of. **Can you break it?** searches for the ones you did not. You say what has to hold, and it throws faults at the design until the goal fails or it runs out of tries. When it finds a break, it shrinks it to the fewest faults that still cause it.
+
+## Run a search
+
+1. Open any design and press **Can you break it?** in the top bar, or press **F**.
+2. Under **What has to hold**, pick a goal and adjust its number if you like.
+3. Open **What can go wrong** to choose which kinds of fault it may use, and which parts to leave alone.
+4. Press **Try to break it**.
+
+While it runs, the panel says which phase it is in: measuring the design with no faults, trying one fault at a time, then two, then three, and finally making a break smaller. Press **Stop** at any time, and **Keep going** to carry on from there.
+
+## The goals
+
+Which goals you see depends on the design.
+
+| Goal | Offered when |
+| --- | --- |
+| Keep everyone up | Always. Fewer than a share of requests fail. |
+| Stay fast | Always. 99 in 100 requests finish within a time. |
+| Keep a client up, or fast | The design has more than one client, so you can hold the goal for one kind of user. |
+| No saved write is lost | A part says "saved" before the write is safe, such as a write-behind cache or a store with **Writes reach disk** set later than Before it answers. |
+| No lost jobs | The design has a queue or another part that holds work for consumers. |
+| Read your own writes | The design has a part whose reads lag its writes, such as read replicas or a search index. |
+| Every payment charged at most once | The design has a part that can be marked as charging money. |
+
+The last three are correctness goals. They are explained on [Verification](/guides/verification).
+
+## What the search tries
+
+Crashes, losing one instance, slowdowns, random errors, cut connections, requests delivered twice, stalls, and answers lost on the way back. Some only apply to some goals: duplicates, stalls and lost answers are tried for the payment goal, where they matter.
+
+The search plays by fixed rules so its answers are fair:
+
+- Faults land between 10s and 15s, and the goal is measured from 5s to 35s, so every fault has time to show its effect.
+- A break has to miss the goal by a margin, and also be worse than the same traffic with no faults, on two runs of traffic. A design that only just misses on luck does not count.
+- Parts every request has to pass through are named as **Single points of failure** first. By default the search only slows them and takes down single machines, because crashing the only database breaks everything and teaches nothing. Tick **Crash and cut them too** to include them. The correctness goals include them anyway, because an outage on its own cannot break those.
+
+It tries up to 500 fault schedules. If it uses them all without a break, **Try harder** runs again with 1000.
+
+## Read the answer
+
+- **Broke it.** The panel lists the faults, what they did to the goal, and how many tries it took to find and then shrink them.
+- **Held across** a number of fault schedules. Nothing it tried broke the goal. The panel says the closest it came.
+- **Already broken with no faults.** The design misses the goal before anything goes wrong. Fix that first.
+
+When it broke, you can:
+
+1. Press **Watch the replay** to play the break on your canvas, with the faults marked on the parts they hit.
+2. Press **Replay link** to copy a link that plays the same run for someone else.
+3. For a correctness goal, press **Follow request** to read the story of the first request that broke the rule, step by step.
+4. Press **Try to fix it**, change the design, and run the search again. It tries the faults that broke it last time first, and tells you when that break no longer works.
+
+<Card title="Try it on Checkout and payments" icon="play" href="/examples/checkout">
+  Open the example, press F, and pick Every payment charged at most once.
+</Card>

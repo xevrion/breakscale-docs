@@ -7,7 +7,7 @@ A short timeout with retries in front of a small database. Retries multiply the 
 
 ## What to watch
 
-The database handles 100 a second. Once waiting passes the 250ms timeout on the API, every request starts retrying three times, so the load triples onto a database that was already full. It is steady at 80 a second. Push to 85 and it starts losing most of its traffic; by 90 almost none gets through.
+The database handles 100 a second. Once waiting passes the 250ms timeout on the API, every request starts trying three times, so the load triples onto a database that was already full. It is steady at 80 a second. Push to 85 and it can tip over and lose most of its traffic; by 95 almost none gets through.
 
 ## What it is made of
 

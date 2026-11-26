@@ -9,7 +9,7 @@ A simplified reconstruction of Stripe from their published posts on rate limiter
 
 A payment is the one thing you must never do twice. Each charge carries a key, and a retry of a charge already made gets the stored answer back instead of a second charge.
 
-Right click the card networks and inject errors. The breaker beside them opens, and charges start failing immediately instead of hanging. A payment that fails cleanly can be retried; one left in the air while a slow network times out is the one nobody can account for.
+Select the card networks and press Glitch in the inspector. The breaker beside them opens, and charges start failing immediately instead of hanging. A payment that fails cleanly can be retried; one left in the air while a slow network times out is the one nobody can account for.
 
 Dashboards read copies of the ledger, behind their own limit. Someone loading a big report can never make a payment wait, because the two never share a queue.
 
@@ -37,13 +37,13 @@ Measured by running this design through the simulator at multiples of its own of
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
 | 220 | 232 | 388.7ms | 1.4% |
-| 330 | 309 | 505.9ms | 8.3% |
-| 440 | 334 | 484.6ms | 24% |
-| 550 | 400 | 482.1ms | 27% |
-| 660 | 384 | 484ms | 40.5% |
-| 880 | 402 | 536.5ms | 55.1% |
-| 1320 | 396 | 506.3ms | 70.1% |
-| 1760 | 394 | 533.6ms | 76.1% |
+| 330 | 314 | 514.5ms | 6.3% |
+| 440 | 361 | 483.3ms | 16% |
+| 550 | 394 | 515.5ms | 27.8% |
+| 660 | 393 | 509.6ms | 37.9% |
+| 880 | 393 | 520.2ms | 56% |
+| 1320 | 397 | 495.6ms | 71.1% |
+| 1760 | 397 | 541.6ms | 77.1% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Stripe: correctness over availability** from the Examples menu and drag the traffic slider yourself.

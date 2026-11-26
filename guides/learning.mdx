@@ -1,0 +1,67 @@
+---
+title: "Learning path and helpers"
+description: "A guided order through every example, challenge and outage, and the help built into the canvas"
+---
+
+## The first-visit tour
+
+Your first visit opens on the Single server example with a four-step tour: raise the load, see which part fills up, give it more room, and watch it recover. Each step moves on when the simulator measures the change, not on a timer, so it never tells you something is full before it is. Press **Skip tour** to leave it.
+
+## The learning path
+
+The learning path puts every example, challenge and real outage in an order that builds up. There are 48 steps in nine tracks:
+
+| Track | What it is about |
+| --- | --- |
+| First bottlenecks | A system is only as fast as the part that fills up first. |
+| Caching | Answer most requests before they reach the slow part. |
+| Queues and async | Say "got it" now, and do the work later. |
+| Saying no under load | Turning some work away early can serve more people. |
+| Surviving failures | Machines and whole regions die. Plan for the day they do. |
+| Data at scale | What to do when one database is not enough. |
+| Checking correctness | Fast and up is not enough. Check what happened to the data. |
+| Real systems | Put it all together, then take apart systems you have heard of. |
+| Real outages | Six real outages, rebuilt small. Watch each one, then fix it. |
+
+To use it:
+
+1. Open the menu and pick **Learning path**.
+2. Press the button under **Up next**, or **Start** on any step.
+3. Work through the step. An example is done when you finish its task. A challenge or an outage is done when your design passes.
+
+Your progress is kept in your browser, and the dialog shows how many of the 48 steps are done.
+
+## Task cards
+
+Every example opens with a short task card on the right, such as "Raise the load to 135 requests a second" followed by what to watch and what to change. Each line ticks off when the simulator measures it, and a button like **Set it to 135** or **Select Database** does the step for you if you would rather watch. **Hide** folds the card away.
+
+## Find the problem
+
+Press **Find the problem** at the top left of the canvas while a design is running. It names the part holding things back and backs it up with what was measured, such as "All 6 slots busy, 47 waiting in line, turning away 111 a second", and offers a button to select that part. When nothing is wrong it says the design is running fine, or that something failing is working as designed.
+
+## What just happened
+
+When something goes wrong, a **What just happened** panel opens at the bottom right with a few dated lines about the run: you raised the load, a part started turning requests away, a part crashed, the worst failure so far. Close it and it folds to a small button. A healthy run stays quiet.
+
+## Hover explanations
+
+Terms like p99, utilisation and idempotency key are underlined across the app. Hover one, or tap it on a touch screen, to see what it means. Turn this off under **Settings**, **Explain metric names**. The full list is in the [glossary](https://breakscale.tech/glossary).
+
+## When one kind of user is hurting
+
+The system figures average every client together, so one group failing badly can hide inside a modest error rate. Breakscale tracks each client separately:
+
+- Each client's box shows its own p99 and share failing.
+- With more than one client, the charts strip adds **By traffic source**, one line per client, switchable between **Failing** and **p99**.
+- When one client is clearly failing and another is not, a single line at the top of the canvas names who is hurting and who is fine.
+
+## Reading the connections
+
+Dots move along each connection while the run plays. Open **Key** at the bottom left of the canvas for the legend:
+
+- The colour of a dot says how that call ended: got through, failed, lost on the wire, turned away at the door, or no answer yet. A ring marks a call that was tried again.
+- Busier connections carry more dots. Dot speed is the same everywhere and says nothing about latency. Zoom in for the exact rate on the label.
+- A thin bar across a box shows how full its waiting line is. When the line is full and the part starts turning calls away, the end of the bar turns red.
+- A lossy connection shows small ticks, and a cut connection is labelled.
+
+With reduced motion turned on in your system, each connection shows a still bar split by the same shares instead. You can turn the dots off under **Settings**, **Show requests moving along connections**.

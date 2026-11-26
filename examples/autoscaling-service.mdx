@@ -22,18 +22,18 @@ Raise the load and capacity does not follow. The controller waits out three seco
 
 Measured by running this design through the simulator at multiples of its own offered rate of 250 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
 
-<Note>This design holds 625 requests a second with 0% errors. At 750 it is losing 18% of them.</Note>
+<Note>This design holds 500 requests a second with 0% errors. At 625 it is losing 15% of them.</Note>
 
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
-| 250 | 242 | 77.7ms | 0% |
-| 375 | 389 | 85.1ms | 0% |
-| 500 | 509 | 103.4ms | 0% |
-| 625 | 612 | 506.6ms | 0% |
-| 750 | 618 | 591.3ms | 18.4% |
-| 1000 | 588 | 713.4ms | 45.7% |
-| 1500 | 591 | 561.9ms | 60.4% |
-| 2000 | 614 | 673.9ms | 70% |
+| 250 | 269 | 65.9ms | 0% |
+| 375 | 390 | 64.8ms | 0% |
+| 500 | 483 | 62.4ms | 0% |
+| 625 | 550 | 534.9ms | 14.7% |
+| 750 | 580 | 524.2ms | 23.2% |
+| 1000 | 576 | 502.1ms | 44.1% |
+| 1500 | 590 | 510.5ms | 60.9% |
+| 2000 | 594 | 505.5ms | 68.8% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Autoscaling service** from the Examples menu and drag the traffic slider yourself.

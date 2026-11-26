@@ -17,6 +17,25 @@
         ]
       },
       {
+        "group": "Guides",
+        "pages": [
+          "guides/faults-and-replay",
+          "guides/break-it",
+          "guides/verification",
+          "guides/challenges",
+          "guides/learning",
+          "guides/incidents",
+          "guides/traffic",
+          "guides/shortcuts"
+        ]
+      },
+      {
+        "group": "For Developers",
+        "pages": [
+          "guides/developers"
+        ]
+      },
+      {
         "group": "Examples",
         "pages": [
           "examples/single-server",
@@ -35,6 +54,7 @@
           "examples/specialised-stores",
           "examples/event-driven",
           "examples/resilient-delivery",
+          "examples/checkout",
           "examples/discord",
           "examples/uber",
           "examples/netflix",
@@ -54,7 +74,7 @@
         },
         {
           "anchor": "GitHub",
-          "href": "https://github.com/xevrion/breakscale",
+          "href": "https://github.com/workersio/breakscale",
           "icon": "github"
         },
         {
@@ -69,7 +89,7 @@
     "links": [
       {
         "label": "GitHub",
-        "href": "https://github.com/xevrion/breakscale"
+        "href": "https://github.com/workersio/breakscale"
       }
     ],
     "primary": {
@@ -92,7 +112,7 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/xevrion/breakscale",
+      "github": "https://github.com/workersio/breakscale",
       "x": "https://x.com/xevrion_the1"
     }
   }

@@ -1,0 +1,44 @@
+---
+title: "Traffic shapes"
+description: "Steady, bursty, a thundering herd, uneven keys, and load as a multiple"
+---
+
+Real traffic is rarely a smooth stream. A client's settings control how its load arrives over time and which keys it asks for.
+
+## Pick a traffic shape
+
+1. Select a **Client**.
+2. Under **What it does**, open **Traffic shape**.
+3. Pick a shape. A line under it says what that shape does, and any extra settings it needs appear below.
+
+| Shape | What it does |
+| --- | --- |
+| Steady | The same rate the whole time. |
+| Ramp up | Climbs from nothing to the full rate over one cycle, then holds. |
+| Spike | Quiet, then 4x for a moment. The average is about half the offered load. |
+| Daily cycle | A quiet night and a busy afternoon, from a quarter of the rate to twice it. |
+| Bursty | Same average, but requests come in clumps. |
+| Thundering herd | Once a cycle, a herd of callers piles in on top of the normal rate. |
+
+**Cycle length** sets how long one cycle of a ramp, spike, daily cycle or herd lasts.
+
+## Bursty traffic
+
+**Average clump** sets how many requests tend to arrive together, from 2 to 50. Clumps come further apart as they grow, so the average rate stays the same. What changes is the waiting: a part that copes with the average can still overflow its line when a large clump lands. Most clumps are small and a few are large.
+
+## Thundering herd
+
+A herd lands once per cycle, the way callers do when a cache entry expires or every client reconnects at once. The first one lands one cycle in.
+
+- **Callers in the herd** sets how many, up to 5,000 each cycle.
+- **Spread the herd over** gives each caller a random delay of up to that long before it fires, up to 10 seconds. At zero, every caller fires in the same millisecond.
+
+Try it: set a herd on any example, watch the line spike at each cycle, then raise the spread and see how much smaller the spike gets.
+
+## Key spread
+
+**Key spread** on a client controls how evenly requests pick among 64 keys. At 0 every key is equally likely, about 1.6% of requests each. Raise the skew and a few keys get most of the traffic, following a Zipf curve. The hint under the slider says what share the hottest key gets. A sharded store sends every request for a key to one partition, so a skewed spread overloads one shard while the average still looks calm.
+
+## Load as a multiple
+
+The offered load in the top bar shows a multiple beside the rate, such as **2.0x**. It compares the load now to the design's own starting load, so "push it to 3x" means the same thing on any example. A design you build on an empty canvas measures from its first client.

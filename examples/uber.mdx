@@ -3,13 +3,13 @@ title: "Uber: ride dispatch"
 description: "Matching riders to drivers, city by city"
 ---
 
-A simplified reconstruction of Uber from their published architecture; numbers are illustrative. Driver pings outnumber rider requests 13 to 1 and ride a Kafka-style stream; at 4x the geo consumer lags and dispatch matches on stale positions without a single rider-facing error. Crash the payment processor and the breaker contains it.
+A simplified reconstruction of Uber from their published architecture; numbers are illustrative. Driver pings outnumber rider requests 13 to 1 and ride a Kafka-style stream; at 4x the geo consumer lags and dispatch quietly matches on stale positions, while payments fills up and turns trip requests away. Crash the payment processor and the breaker contains it.
 
 ## What to watch
 
 One rider request touches four services before an offer comes back. The slowest of them sets the wait, so a match happens at the speed of the weakest link here.
 
-Drag the load to 4x and watch payments. Each charge takes 200ms and only four run at once, so it tops out near 20 a second. The breaker in front notices and starts failing fast, which beats every trip request piling up behind a slow card network.
+Drag the load to 4x and watch payments. Each charge takes 200ms and only four run at once, so it tops out near 20 a second and the extra trip requests are turned away. The breaker in front opens once half its calls fail. At 4x about a third do, so it trips only now and then. Crash payments to watch it open and fail fast.
 
 The location index is split by map cell. Give it a hot key and the whole city crowds into one cell, so that one shard saturates while the rest sit idle.
 
@@ -33,16 +33,18 @@ The location index is split by map cell. Give it a hot key and the whole city cr
 
 Measured by running this design through the simulator at multiples of its own offered rate of 430 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
 
+<Note>This design holds 1720 requests a second with 0.8% errors. At 2580 it is losing 2% of them.</Note>
+
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
-| 430 | 439 | 172.2ms | 0% |
-| 645 | 629 | 188.5ms | 0.2% |
-| 860 | 817 | 303.9ms | 0% |
-| 1075 | 1087 | 361.4ms | 0% |
-| 1290 | 1264 | 417.2ms | 0.2% |
-| 1720 | 1738 | 686.2ms | 1.4% |
-| 2580 | 2568 | 37.6ms | 0.7% |
-| 3440 | 3368 | 28.2ms | 2.5% |
+| 430 | 417 | 60.7ms | 0.3% |
+| 645 | 663 | 155.4ms | 0% |
+| 860 | 841 | 184.8ms | 0% |
+| 1075 | 1088 | 122.9ms | 0% |
+| 1290 | 1281 | 817.7ms | 0.3% |
+| 1720 | 1830 | 35.7ms | 0.8% |
+| 2580 | 2521 | 43.4ms | 2.2% |
+| 3440 | 3377 | 34.5ms | 1.9% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Uber: ride dispatch** from the Examples menu and drag the traffic slider yourself.

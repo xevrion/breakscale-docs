@@ -7,7 +7,7 @@ A limiter refuses excess traffic at the door. It serves slightly less, but what 
 
 ## What to watch
 
-The limiter does not add capacity. It refuses some requests quickly so the rest are answered quickly: at 600 offered it serves 200 at 36ms, where removing it serves 234 at 235ms. Saying no fast is what buys the predictable wait.
+The limiter does not add capacity. It refuses some requests quickly so the rest are answered quickly: at 600 offered it serves 200 at 36ms, where removing it serves 240 at 235ms. Saying no fast is what buys the predictable wait.
 
 ## What it is made of
 
@@ -22,18 +22,18 @@ The limiter does not add capacity. It refuses some requests quickly so the rest 
 
 Measured by running this design through the simulator at multiples of its own offered rate of 150 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
 
-<Note>This design holds 150 requests a second with 0% errors. At 225 it is losing 5% of them.</Note>
+<Note>This design holds 150 requests a second with 0% errors. At 225 it is losing 3% of them.</Note>
 
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
-| 150 | 148 | 81.8ms | 0% |
-| 225 | 193 | 85.7ms | 5.4% |
-| 300 | 197 | 81.9ms | 34.9% |
-| 375 | 202 | 83.1ms | 46.9% |
-| 450 | 202 | 71.7ms | 53% |
-| 600 | 199 | 71.7ms | 67.2% |
-| 900 | 200 | 77.3ms | 77.9% |
-| 1200 | 200 | 80.5ms | 83.3% |
+| 150 | 149 | 74.2ms | 0% |
+| 225 | 196 | 92.5ms | 3.3% |
+| 300 | 200 | 75ms | 28.6% |
+| 375 | 199 | 69.6ms | 49.3% |
+| 450 | 198 | 75.7ms | 54.8% |
+| 600 | 203 | 78.5ms | 68.2% |
+| 900 | 200 | 71.5ms | 78.5% |
+| 1200 | 199 | 79.2ms | 84% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Rate limited API** from the Examples menu and drag the traffic slider yourself.

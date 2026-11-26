@@ -1,0 +1,61 @@
+---
+title: "Faults and replay"
+description: "Break any part on purpose, then send someone the exact run"
+---
+
+Every component and every connection can be broken from the inspector. Each fault lands at the current simulated moment and is saved with the run, so Reset plays it again at the same time and a replay link can send it to someone else.
+
+## Break a component
+
+1. Select a component on the canvas.
+2. Find **Break it on purpose** near the top of the inspector.
+3. Pick a fault and press its button. The status line above the buttons says what is happening now.
+4. Press **Fix** to put it back. **Ctrl+Z** (**Cmd+Z** on a Mac) also undoes a fault.
+
+| Fault | What it does | Choices |
+| --- | --- | --- |
+| Crash | Stops it completely. Work it was holding is lost. | |
+| Restart | Stops it, then it starts again by itself. Work in progress is lost. | Down for 1s, 2s, 5s or 10s |
+| Crash one instance | Stops one of its machines and leaves the rest serving. Shown only on a component running more than one instance. | |
+| Slow | Every request takes that many times longer to handle. | 2x, 3x, 5x, 10x or 20x |
+| Stall | It stops for a while and then carries on, like a long garbage collection pause. It returns no errors itself, but callers that give up waiting fail or send the request again. | 0.2s to 5s |
+| Glitch | It stays up, but that share of its answers are errors. | 10% to 100% |
+
+Slow works on anything that does timed work, stores, replicas, shards, WebSocket gateways and lambdas included. On a part that does no timed work of its own, the button stays visible but greyed out and says why.
+
+## Break a connection
+
+The **Connections** list under the node faults has a row for each connection, and selecting a connection on the canvas gives the same controls for that one alone.
+
+- **Cut connection** stops everything crossing it until you restore it.
+- **Duplicate** delivers some of its requests twice, the way a network that resends a packet can. The far end does the work again. The default is 5%. Select the connection itself to pick 1%, 5%, 10% or 25%.
+- **Cut answers** lets requests through and does their work, but loses the answers on the way back. A caller with a timeout gives up and, with retries, does the work a second time. A caller with no timeout waits for good.
+
+**Packet loss** is different: it is a setting on a selected connection, not a fault. Pick a share from 1% to 50% under **Packet loss** and it is saved with the design, stays after Reset, and can be undone like any other edit. A caller with retries sends a lost request again.
+
+## Writes that never reach disk
+
+A **Database** or **Read replicas** component has a **Durability** section with one setting, **Writes reach disk**.
+
+- **Before it answers** is the default. A crash loses nothing it said was saved.
+- **Within 10ms**, **Within 100ms** or **Within 1s** answers first and writes later. A crash or restart then loses every write still waiting, with no error anyone sees.
+
+Try it: set Writes reach disk to Within 1s, then open [Can you break it?](/guides/break-it) and pick **No saved write is lost**. The search looks for a crash that loses a write the store already called saved.
+
+## Saved faults and Reset
+
+Once you have pressed a fault button, the inspector says how many faults are saved with the run. Reset plays them again at the same moments, so you can watch the same failure as many times as you like. **Forget saved faults** empties the list.
+
+## Send the exact run
+
+1. Press **Share** in the top bar.
+2. Under **This exact run**, press **Copy link**.
+3. Send the link.
+
+The person who opens it watches the run from the start, with each fault at the moment it happened. **This design** sends only your boxes and settings, without the faults, and it runs fresh. The exact-run option only appears once the run has faults in it.
+
+<Note>If you change a setting partway through a run, the replay uses the design as it is now, from the start. Runs are seeded, so the same design and faults play the same way on any machine.</Note>
+
+## Slots held while waiting
+
+A service, worker or lambda keeps its slot while it waits for the parts it calls. When a database behind it slows down, the service fills up too, even though it is doing almost no work itself. Select one and look at **Slots held** under **What that works out to**: a high number there with low CPU work means the trouble is further down the line.

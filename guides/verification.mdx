@@ -1,0 +1,39 @@
+---
+title: "Verification"
+description: "Check what happened to the data, not just whether requests came back"
+---
+
+A design can be fast, up, and still wrong. A customer charged twice, an order that was saved and then vanished, a profile that shows the old name right after a change: none of these show up on an error chart. Breakscale records every request's history in a run and checks it against three rules.
+
+## The three rules
+
+**Charged at most once.** A payment should be charged once, however many times the call is retried. It breaks when a call that already charged looks failed to its caller, after a timeout or an error further on, and the retry charges again. It also breaks when the network delivers the same call twice.
+
+**No saved write is lost.** Every write a client was told was saved should reach storage. It breaks when a part answers "saved" before the write is safe, and then crashes or restarts. A write still on its way when the run ends is not counted.
+
+**Read your own writes.** Once a client is told a write was saved, its own reads should see it. It breaks when a read goes to a copy of the data that has not caught up yet.
+
+## Check a design
+
+1. Mark the part that charges money. Select it, and under **Correctness** turn on **Each finished call charges money**. This changes nothing about how the run plays. If you skip this step, the panel asks which part charges the card.
+2. Open [Can you break it?](/guides/break-it) and pick **Every payment charged at most once**, **No saved write is lost** or **Read your own writes**.
+3. Press **Try to break it**.
+4. If it breaks, press **Follow request**. You get the first request that broke the rule as a timeline, with the bad step tagged **Charged again**, **Lost** or **Stale**.
+
+Correctness goals are never loosened. The goal is zero, and an outage does not count as a break: a system that answers nobody charges nobody twice.
+
+## The usual fixes
+
+These are settings in the inspector's **Correctness** and **Durability** sections.
+
+| Problem | Setting |
+| --- | --- |
+| Charged twice | **Ignore repeats with an idempotency key** on the part that charges. A key whose call succeeded gets the same answer again instead of doing the work twice. |
+| Saved write lost | **Writes reach disk** set to **Before it answers** on the store. |
+| Stale read | **Read from the primary while the copies are behind** on read replicas. Reads of a record the copies have not caught up on go to the primary. |
+
+Each fix has a cost the simulator shows. Reading from the primary takes one of its write slots. Writing to disk first is the safe choice, though this model does not charge the extra time a real disk would take.
+
+## Practise
+
+The **Checking correctness** track in the [learning path](/guides/learning) starts with the [Checkout and payments](/examples/checkout) example and then five challenges: Charged twice, Lost on the way back, Sent twice, Saved, then gone, and Read your own write.

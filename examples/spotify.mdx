@@ -3,15 +3,15 @@ title: "Spotify: music and discovery"
 description: "A steady catalogue beside a heavy recommender"
 ---
 
-A simplified reconstruction of Spotify from their engineering blog; numbers are illustrative. Audio flows from object storage through a CDN, apart from the metadata path. Playlist writes pin a replica primary while its read replicas idle, the event firehose outruns the royalty consumer at 4x, and every 20s the Discover Weekly batch writes the same vector index the home feed reads, so p99 breathes on the batch clock.
+A simplified reconstruction of Spotify from their engineering blog; numbers are illustrative. Audio flows from object storage through a CDN, apart from the metadata path. Playlist writes all land on one primary while reads spread across its copies, the event firehose outruns the royalty consumer at 4x, and every 20s the Discover Weekly batch writes the same vector index the home feed reads, so the load on the index jumps on the batch clock.
 
 ## What to watch
 
 Audio and everything else are separate systems. 1100 song fetches a second go to a cache near the listener, but a music catalogue has a long tail, so nearly one in five still reaches storage.
 
-Adding a song is a write, and writes only go to the one main copy of the playlist store. It manages about 100 a second while its two read copies sit idle. Reads also run up to 150ms behind, so a song you just added can be missing when the playlist loads back.
+Adding a song is a write, and writes only go to the one main copy of the playlist store. It manages about 100 a second, and its three read copies only help reads. Reads also run up to 150ms behind, so a song you just added can be missing when the playlist loads back.
 
-Watch the taste vectors. Every 20 seconds the recommendation batch writes into the same index the home feed reads from, and the slow tail on the feed rises and falls on that clock. Turn the load up and the two fight over one store.
+Watch the taste vectors. Every 20 seconds the recommendation batch writes into the same index the home feed reads from, and the index jumps from about 15 to nearly 90 percent busy for a second. There is room to spare, so the slowest requests on the feed barely move.
 
 Two readers share one event stream. Turn the load up and the royalty job cannot keep up while the analytics store beside it does fine. Royalty falls behind silently, and eventually the oldest events expire before it reaches them.
 
@@ -39,18 +39,18 @@ Two readers share one event stream. Turn the load up and the royalty job cannot 
 
 Measured by running this design through the simulator at multiples of its own offered rate of 1920 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
 
-<Note>This design holds 5760 requests a second with 0.1% errors. At 7680 it is losing 4% of them.</Note>
+<Note>This design holds 5760 requests a second with 0.1% errors. At 7680 it is losing 3% of them.</Note>
 
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
 | 1920 | 1913 | 146.4ms | 0.1% |
 | 2880 | 2856 | 128.8ms | 0% |
 | 3840 | 3771 | 136.7ms | 0.1% |
-| 4800 | 4779 | 144.9ms | 0.1% |
-| 5760 | 5834 | 145ms | 0.1% |
-| 7680 | 7352 | 493.7ms | 3.8% |
-| 11520 | 10386 | 476.2ms | 9.5% |
-| 15360 | 13466 | 502.8ms | 12.8% |
+| 4800 | 4857 | 127.9ms | 0.1% |
+| 5760 | 5603 | 163.6ms | 0.1% |
+| 7680 | 7379 | 477.2ms | 3.3% |
+| 11520 | 10296 | 453.5ms | 9.6% |
+| 15360 | 13364 | 462.5ms | 12.8% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Spotify: music and discovery** from the Examples menu and drag the traffic slider yourself.

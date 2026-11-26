@@ -1,0 +1,35 @@
+---
+title: "Real incidents"
+description: "Six published outages, rebuilt small. Watch each one happen, then fix it"
+---
+
+Each incident is a published postmortem rebuilt from the parts Breakscale already has. You watch the outage play out on the canvas with a caption for each moment, read what really happened, and then get a brief to fix it, checked the same way as every [challenge](/guides/challenges).
+
+<Note>These are simplified models. The story, the date and the source come from the postmortem. Every time and number on screen comes from the simulator, and each incident says how it differs from the real event, for example that hours are compressed into seconds.</Note>
+
+## Watch one, then fix it
+
+1. Open the menu, pick **Examples**, and scroll to **Real incidents**. They are also the last track of the [learning path](/guides/learning).
+2. Pick an incident. The panel on the right says what the model leaves out, tells the story, and links the source.
+3. Press **Watch it happen**. The fault schedule plays on the canvas and a caption says what is going on at each moment.
+4. Press **Fix it**. You get a brief with goals, any slot budget, and the same hints and check as a challenge.
+
+## The six incidents
+
+| Incident | Date | What went wrong | The brief | Source |
+| --- | --- | --- | --- | --- |
+| S3 goes down in one region | 28 February 2017 | One mistyped command takes storage offline | Keep the status page up | [AWS](https://aws.amazon.com/message/41926/) |
+| A firewall rule takes down the edge | 2 July 2019 | A bad rule reaches every server in seconds | Roll it out in stages | [Cloudflare](https://blog.cloudflare.com/details-of-the-cloudflare-outage-on-july-2-2019/) |
+| Retries keep a network down | 7 December 2021 | Clients that did not back off | Make it come back | [AWS](https://aws.amazon.com/message/12721/) |
+| A cache reboot swamps its database | 29 January 2021 | Sized for the misses, not for all of it | Ready for an empty cache | [Coinbase](https://www.coinbase.com/blog/incident-post-mortem-january-29-2021) |
+| Typing crowds out sign-in | 6 November 2023 | Too little room, and nothing chose who got it | Choose who gets the room | [Discord](https://discord.com/blog/authentication-outage) |
+| An exchange loses its only zone | 7 May 2026 | No automatic way to fail over | Fail over on its own | [Coinbase](https://www.coinbase.com/blog/a-postmortem-of-our-may-7-2026-outage) |
+
+## What each one teaches
+
+- **S3** shows a status page going down with the thing it reports on.
+- **Cloudflare** shows why a change should reach part of the fleet first.
+- **AWS 2021** shows retries that never back off keeping a system down after the cause has gone.
+- **Coinbase 2021** shows what a database sized for cache misses does when the cache empties.
+- **Discord** is about choosing which work gets the room when there is not enough.
+- **Coinbase 2026** is about making a failover happen with nobody there to press the button.

@@ -1,0 +1,50 @@
+---
+title: "Challenges"
+description: "Eighteen briefs that fail as they start, checked fairly by the simulator"
+---
+
+A challenge is a design that does not meet its requirement, with a brief that says what was promised. Your job is to work out why and fix it. Each one was chosen so the design fails as it ships and one findable change makes it pass.
+
+## Start one
+
+1. Open the menu and pick **Challenges**, or press **Try a challenge** on an empty canvas.
+2. Pick a brief. They are grouped in four levels: one part that is too small, behaviour under trouble, losing a part, and problems that hide from the obvious reading.
+3. Read the brief on the right, then run the design and look for the cause.
+4. Change the design. A second after you stop changing it, the check runs by itself.
+
+Stuck? **Give me a hint** shows the smallest nudge first, and **Another hint** narrows it. The last one names where to look, never the fix. Once you pass, **What you learned** explains the lesson and **Next challenge** moves on.
+
+## Your own design is safe
+
+A challenge has a canvas of its own. Starting one sets your design aside untouched, and **Back to my design** brings it back exactly as it was. Each challenge also keeps your attempt, so you can leave and come back later, or reload in the middle of one, and pick up where you were.
+
+**Copy link** gives a link that opens that brief. You can also open one directly with `?challenge=` and its id, such as `https://breakscale.tech/?challenge=hold-the-line`.
+
+## How the check works
+
+The live numbers on screen move with the run and depend on when you looked. The pass does not. The check builds its own run from your design and:
+
+- puts back the brief's load, any faults the brief promises, and the fields it holds still;
+- plays it on three runs of traffic, on fixed seeds;
+- lets each one warm up for 15 seconds and then counts the next 45, from a tally of every request.
+
+You pass when every goal holds on all three runs. The panel shows each goal, what the check measured, and which run decided it. A design building a backlog it will never clear reads **Falling behind**, even if its numbers look fine so far.
+
+## Rules of the brief
+
+- **Slot budget.** Most briefs say how many slots you may add, such as "You can add up to 6 more slots". A slot is one request a part can work on at once. Some allow none, so the answer has to come from somewhere other than more room. Go over and the check reads **Over budget**.
+- **Fixed fields.** How the people sending requests behave, and what the work itself costs, are fixed. Those fields are locked in the inspector with a note saying why.
+- **Structure.** You cannot take out the client, add a second one, or disconnect parts the brief relies on. Some briefs also refuse a shortcut that hides the problem, such as a queue that answers before the work is done. The panel says what to put back.
+
+Can you break it? is off while a challenge is open.
+
+## The briefs
+
+| Level | Challenges |
+| --- | --- |
+| 1 | Hold the line, Keep it warm, Nothing looks busy |
+| 2 | Five seconds, Not everyone's problem, Say no fast, Buying time |
+| 3 | Survive a dead machine, Lose a region, Checkout rush |
+| 4 | One hot key, Saved, then lost, Loud and quiet, Charged twice, Lost on the way back, Sent twice, Saved, then gone, Read your own write |
+
+Each [real incident](/guides/incidents) also comes with a brief of its own, judged by the same check.

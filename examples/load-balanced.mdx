@@ -7,7 +7,7 @@ Three servers share the load, but they all still talk to the same database.
 
 ## What to watch
 
-Three servers share one database. That triples the API capacity and does nothing for the database, which still tops out near 480 a second. Adding servers only helps when the servers were the problem.
+Three servers share one database. That triples the API capacity and does nothing for the database, which still tops out near 430 a second. Adding servers only helps when the servers were the problem.
 
 ## What it is made of
 
@@ -22,18 +22,18 @@ Three servers share one database. That triples the API capacity and does nothing
 
 Measured by running this design through the simulator at multiples of its own offered rate of 140 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
 
-<Note>This design holds 420 requests a second with 0% errors. At 560 it is losing 25% of them.</Note>
+<Note>This design holds 420 requests a second with 0% errors. At 560 it is losing 27% of them.</Note>
 
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
 | 140 | 154 | 144.3ms | 0% |
 | 210 | 209 | 122ms | 0% |
-| 280 | 261 | 123.2ms | 0% |
-| 350 | 347 | 140.3ms | 0% |
-| 420 | 402 | 361.7ms | 0% |
-| 560 | 427 | 373.3ms | 25.3% |
-| 840 | 434 | 543.9ms | 49.5% |
-| 1120 | 422 | 556.4ms | 62.6% |
+| 280 | 299 | 109.6ms | 0% |
+| 350 | 364 | 150.9ms | 0% |
+| 420 | 419 | 359.1ms | 0% |
+| 560 | 430 | 354.6ms | 27.4% |
+| 840 | 434 | 342.9ms | 50.4% |
+| 1120 | 430 | 501ms | 60.6% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Load balanced** from the Examples menu and drag the traffic slider yourself.

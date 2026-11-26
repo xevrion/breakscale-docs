@@ -9,7 +9,7 @@ A stream with two consumer groups, a fan-out topic, a websocket tier, a sidecar,
 
 Everything on the left is a caller waiting for an answer. Everything on the right runs after that answer was already sent.
 
-One event becomes five pieces of work here, each read by its own consumer. Turn the load up and watch the audit log: it takes 40ms a message and falls behind while the four beside it keep up, and nobody calling the API sees a thing.
+One event becomes five pieces of work here, each read by its own consumer. Turn the load up to 2x and watch the audit log and the search indexer: the audit log runs out of room and drops messages, and the indexer falls further behind the stream, while billing, push and metrics keep up. Nobody calling the API sees a thing.
 
 The report function starts cold. The first call after a quiet spell pays 350ms of startup, then stays warm for ten seconds. Watch the first burst after the timer fires.
 
@@ -32,16 +32,18 @@ The report function starts cold. The first call after a quiet spell pays 350ms o
 
 Measured by running this design through the simulator at multiples of its own offered rate of 90 requests a second. Twenty seconds of simulated time, one fixed seed, so the same numbers come out every time.
 
+<Note>This design holds 90 requests a second with 0% errors. At 135 it is losing 2% of them.</Note>
+
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
 | 90 | 84 | 76.4ms | 0% |
-| 135 | 120 | 76.5ms | 2.7% |
-| 180 | 206 | 86.5ms | 0.5% |
-| 225 | 202 | 72.2ms | 5.2% |
-| 270 | 227 | 61.9ms | 9.3% |
-| 360 | 222 | 67.3ms | 37.3% |
-| 540 | 147 | 73.6ms | 74% |
-| 720 | 149 | 74.8ms | 78.6% |
+| 135 | 140 | 89.9ms | 2.3% |
+| 180 | 177 | 75.4ms | 1.9% |
+| 225 | 211 | 71.3ms | 2.6% |
+| 270 | 242 | 78.2ms | 11.4% |
+| 360 | 217 | 78.1ms | 36.1% |
+| 540 | 150 | 52.9ms | 70.9% |
+| 720 | 150 | 69.2ms | 78.7% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Event-driven backend** from the Examples menu and drag the traffic slider yourself.

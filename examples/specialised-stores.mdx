@@ -9,7 +9,7 @@ Search, vectors, graph, blobs, metrics and an archive tier, each store built for
 
 One general purpose database would do all of this badly. A text index, a vector index and a graph each answer a question the others are slow at, and the price is four stores to run instead of one.
 
-Take the load to 4x. The vector index saturates and the client sees the errors immediately. The archive path saturates too and says nothing: the batch client is still acked while cold storage sheds behind the queue.
+Take the load to 4x. The vector index saturates and the client sees the errors immediately. The archive path saturates too and says nothing: the batch client is still acked while cold storage turns restores away behind the queue.
 
 Cold storage is slow on purpose, seconds per restore, because almost nothing is ever read back. Paying for fast storage you never read is the mistake this avoids.
 
@@ -37,14 +37,14 @@ Measured by running this design through the simulator at multiples of its own of
 
 | Offered | Goodput | p99 | Errors |
 | ---: | ---: | ---: | ---: |
-| 246 | 252 | 170.4ms | 0% |
-| 369 | 383 | 160.6ms | 0% |
-| 492 | 478 | 162.1ms | 0% |
-| 615 | 618 | 151.8ms | 0% |
-| 738 | 746 | 428.1ms | 0% |
-| 984 | 896 | 592.1ms | 8.4% |
-| 1476 | 1208 | 597.9ms | 16.6% |
-| 1968 | 1570 | 595.9ms | 22.8% |
+| 246 | 233 | 149.5ms | 0% |
+| 369 | 383 | 158.8ms | 0% |
+| 492 | 507 | 162.2ms | 0% |
+| 615 | 596 | 155.1ms | 0% |
+| 738 | 760 | 575.2ms | 0% |
+| 984 | 902 | 593.8ms | 7.5% |
+| 1476 | 1229 | 882.3ms | 17% |
+| 1968 | 1394 | 889.9ms | 27.2% |
 
 <Card title="Open this example" icon="play" href="https://breakscale.tech">
   Load **Specialised stores** from the Examples menu and drag the traffic slider yourself.
